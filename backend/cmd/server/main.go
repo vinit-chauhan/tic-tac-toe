@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/vinit-chauhan/tic-tac-toe/config"
+	"github.com/vinit-chauhan/tic-tac-toe/internal"
 	"github.com/vinit-chauhan/tic-tac-toe/pkg/logger"
 )
 
@@ -16,19 +17,25 @@ func init() {
 
 	logger.SetLogLevel(logger.LevelDebug)
 
-	logger.Debug("[init] initializing the server")
-	logger.Debug("[init] loading config file")
+	logger.Debug("initializing the server", "init")
+	logger.Debug("loading config file", "init")
 
 	conf, err = config.Load("config.yml")
 	if err != nil {
-		logger.Panic("[init] error loading config file", err)
+		logger.Panic("error loading config file", "init", err)
 	}
 
-	logger.Info("[init] config loaded successfully")
+	logger.Info("config loaded successfully", "init")
 }
 
 func main() {
-	logger.Info("[main] Starting the server")
+	logger.Info("starting the server", "main")
+
+	logger.Info("connecting to Database", "main")
+	err := internal.ConnectDB(conf)
+	if err != nil {
+		panic(err)
+	}
 
 	out, err := os.Create("gin.log")
 	if err != nil {

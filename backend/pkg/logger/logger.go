@@ -35,22 +35,22 @@ func logMessage(level int, msg string) {
 	}
 }
 
-func Debug(msg string) {
-	logMessage(LevelDebug, "DEBUG: "+msg)
+func Debug(msg, tag string) {
+	logMessage(LevelDebug, "DEBUG:  ["+tag+"] "+msg)
 }
 
-func Info(msg string) {
-	logMessage(LevelInfo, "INFO: "+msg)
+func Info(msg, tag string) {
+	logMessage(LevelInfo, "INFO: ["+tag+"] "+msg)
 }
 
-func Warn(msg string) {
-	logMessage(LevelWarn, "WARN: "+msg)
+func Warn(msg, tag string) {
+	logMessage(LevelWarn, "WARN: ["+tag+"] "+msg)
 }
 
-func Error(msg string, err error) {
-	logMessage(LevelError, "ERROR: "+msg+" : "+err.Error())
+func Error(msg, tag string, err error) {
+	logMessage(LevelError, "ERROR: ["+tag+"] "+msg+" : "+err.Error())
 }
 
-func Panic(msg string, err error) {
-	logMessage(LevelPanic, "PANIC: "+msg+" : "+err.Error())
+func Panic(msg, tag string, err error) {
+	logMessage(LevelPanic, "PANIC: ["+tag+"] "+msg+" : "+err.Error())
 }
