@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -12,18 +11,9 @@ import (
 )
 
 func GetUserInfo(ctx *gin.Context) {
-	var user models.User
-
-	userId, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid format for user id"})
-		return
-	}
-	user.ID = uint(userId)
-
-	result := initializers.DB.First(&user)
-	if result.Error != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+	user, ok := ctx.Get("currentUser")
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
 

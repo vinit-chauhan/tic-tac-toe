@@ -9,6 +9,7 @@ import (
 	"github.com/vinit-chauhan/tic-tac-toe/config"
 	"github.com/vinit-chauhan/tic-tac-toe/initializers"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/middleware"
 	"github.com/vinit-chauhan/tic-tac-toe/pkg/logger"
 )
 
@@ -60,7 +61,7 @@ func main() {
 	r.POST("/auth/login/", controllers.Login)
 
 	// User routes
-	r.GET("/user/:id", controllers.GetUserInfo)
+	r.GET("/user/profile", middleware.CheckAuth, controllers.GetUserInfo)
 
 	addr := fmt.Sprintf("%s:%d", conf.Server.Host, conf.Server.Port)
 
