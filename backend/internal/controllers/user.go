@@ -49,7 +49,7 @@ func CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	pHash, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
+	pHash, err := bcrypt.GenerateFromPassword([]byte(body.Password+body.Username), bcrypt.DefaultCost)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

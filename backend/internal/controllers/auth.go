@@ -35,7 +35,7 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(body.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(body.Password+body.Username)); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid password"})
 		return
 	}
