@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/vinit-chauhan/tic-tac-toe/config"
-	"github.com/vinit-chauhan/tic-tac-toe/internal"
+	"github.com/vinit-chauhan/tic-tac-toe/initializers"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers"
 	"github.com/vinit-chauhan/tic-tac-toe/pkg/logger"
 )
 
@@ -28,11 +30,15 @@ func init() {
 	logger.Info("config loaded successfully", "init")
 }
 
+func Todo(ctx *gin.Context) {
+	ctx.JSON(http.StatusNotImplemented, gin.H{"error": "implementation missing"})
+}
+
 func main() {
 	logger.Info("starting the server", "main")
 
 	logger.Info("connecting to Database", "main")
-	err := internal.ConnectDB(conf)
+	err := initializers.ConnectDB(conf)
 	if err != nil {
 		panic(err)
 	}
@@ -43,12 +49,18 @@ func main() {
 	}
 	gin.DefaultWriter = out
 
+	if os.Getenv("SECRET") == "" {
+		panic("env(SECRET) not set")
+	}
+
 	r := gin.Default()
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message": "Hello",
-		})
-	})
+
+	// Auth endpoints
+	r.POST("/auth/signup/", controllers.CreateUser)
+	r.POST("/auth/login/", controllers.Login)
+
+	// User routes
+	r.GET("/user/:id", controllers.GetUserInfo)
 
 	addr := fmt.Sprintf("%s:%d", conf.Server.Host, conf.Server.Port)
 
