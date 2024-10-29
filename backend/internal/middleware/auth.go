@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -14,7 +15,6 @@ import (
 )
 
 func CheckAuth(ctx *gin.Context) {
-
 	authHeader := ctx.GetHeader("Authorization")
 
 	if authHeader == "" {
@@ -46,19 +46,32 @@ func CheckAuth(ctx *gin.Context) {
 		return
 	}
 
-	if float64(time.Now().Unix()) > claims["exp"].(float64) {
+	exp, err := claims.GetExpirationTime()
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		return
+	}
+
+	if time.Now().Unix() > exp.Unix() {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "token expired"})
 		return
 	}
 
+	sub, err := claims.GetSubject()
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		return
+	}
+
 	var user models.User
-	initializers.DB.Where("ID=?", claims["id"]).Find(&user)
+	id, _ := strconv.Atoi(sub)
+	initializers.DB.Where("ID=?", id).Find(&user)
 
 	if user.ID == 0 {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "user unauthorized"})
+		return
 	}
 
 	ctx.Set("currentUser", user)
-
 	ctx.Next()
 }

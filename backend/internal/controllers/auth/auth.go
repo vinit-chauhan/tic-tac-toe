@@ -1,8 +1,9 @@
-package controllers
+package auth
 
 import (
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -40,9 +41,11 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
+	exp := time.Now().Add(24 * time.Hour).Unix()
 	generateToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":  foundUser.ID,
-		"exp": time.Now().Add(24 * time.Hour).Unix(),
+		"sub": strconv.Itoa(int(foundUser.ID)),
+		"exp": exp,
+		"iat": time.Now().Unix(),
 	})
 
 	token, err := generateToken.SignedString([]byte(os.Getenv("SECRET")))
@@ -51,8 +54,14 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
+	ctx.SetCookie("Authorization", token, int(exp-time.Now().Unix()), "/", "", true, true)
 	ctx.JSON(http.StatusOK, gin.H{
-		"token": token,
+		"message": "logged in successfully",
+		"token":   token,
 	})
+}
 
+func SignOut(ctx *gin.Context) {
+	ctx.SetCookie("Authorization", "", int(time.Now().Add(-1*time.Hour).Unix()), "/", "", true, true)
+	ctx.JSON(http.StatusOK, gin.H{"message": "successfully signed out"})
 }

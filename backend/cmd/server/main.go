@@ -8,7 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/vinit-chauhan/tic-tac-toe/config"
 	"github.com/vinit-chauhan/tic-tac-toe/initializers"
-	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers/auth"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers/user"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/middleware"
 	"github.com/vinit-chauhan/tic-tac-toe/pkg/logger"
 )
@@ -57,11 +58,12 @@ func main() {
 	r := gin.Default()
 
 	// Auth endpoints
-	r.POST("/auth/signup/", controllers.CreateUser)
-	r.POST("/auth/login/", controllers.Login)
+	r.POST("/auth/signup/", user.CreateUser)
+	r.POST("/auth/login/", auth.Login)
+	r.POST("/auth/signout/", auth.SignOut)
 
 	// User routes
-	r.GET("/user/profile", middleware.CheckAuth, controllers.GetUserInfo)
+	r.GET("/user/profile", middleware.CheckAuth, user.GetUserInfo)
 
 	addr := fmt.Sprintf("%s:%d", conf.Server.Host, conf.Server.Port)
 
