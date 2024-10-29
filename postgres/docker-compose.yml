@@ -8,7 +8,7 @@ services:
     shm_size: 128mb
 
     volumes:
-      - ./data:/data/postgre/data
+      - ./data:/data/postgres/data
     environment:
       POSTGRES_PASSWORD: example
       POSTGRES_USER: postgres
