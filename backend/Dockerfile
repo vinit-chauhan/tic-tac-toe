@@ -32,6 +32,3 @@ COPY config.yml .
 
 # Copy the built server binary from the builder stage
 COPY --from=builder /app/build/server .
-
-# Set the entrypoint to the server binary
-ENTRYPOINT ["/app/server"]

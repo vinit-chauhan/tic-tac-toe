@@ -1,9 +1,9 @@
 server:
-  host: localhost
+  host: "0.0.0.0"
   port: 3000
 
 database:
-  host: "localhost"
+  host: "192.168.140.10"
   port: 5432
   user: "postgres"
   password: "example"

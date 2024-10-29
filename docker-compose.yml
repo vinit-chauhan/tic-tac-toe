@@ -1,14 +1,13 @@
 # Use postgres/example user/password credentials
 services:
-
   db:
     image: postgres
     restart: always
     # set shared memory limit when using docker-compose
     shm_size: 128mb
-
+    
     volumes:
-      - ./data:/data/postgres/data
+      - ./postgres/data:/data/postgres/data
     environment:
       POSTGRES_PASSWORD: example
       POSTGRES_USER: postgres
@@ -21,3 +20,19 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+  backend:
+    depends_on:
+      - db
+    build:
+      context: ./backend/.
+      dockerfile: Dockerfile
+    environment:
+      - SECRET=ASDF
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/config.yml:/app/config.yml
+      - ./backend/logs:/app/logs
+    command: ["/app/server"]
+
