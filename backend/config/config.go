@@ -3,7 +3,7 @@ package config
 import (
 	"os"
 
-	"github.com/vinit-chauhan/tic-tac-toe/pkg/logger"
+	"github.com/vinit-chauhan/tic-tac-toe/utils/logger"
 	"gopkg.in/yaml.v3"
 )
 

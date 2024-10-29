@@ -16,8 +16,17 @@ const (
 	LevelPanic
 )
 
+const LogsDir = "logs"
+
 func init() {
-	out, err := os.OpenFile("server.log", os.O_CREATE|os.O_WRONLY, 0755)
+	if _, err := os.ReadDir(LogsDir); err != nil {
+		if err := os.Mkdir(LogsDir, 0755); err != nil {
+			panic(err)
+		}
+
+	}
+
+	out, err := os.OpenFile(LogsDir+"/server.log", os.O_CREATE|os.O_WRONLY, 0755)
 	if err != nil {
 		panic(err)
 	}

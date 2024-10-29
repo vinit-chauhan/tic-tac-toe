@@ -6,12 +6,13 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/vinit-chauhan/tic-tac-toe/config"
 	"github.com/vinit-chauhan/tic-tac-toe/initializers"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers/auth"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers/user"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/middleware"
-	"github.com/vinit-chauhan/tic-tac-toe/pkg/logger"
+	"github.com/vinit-chauhan/tic-tac-toe/utils/logger"
 )
 
 var conf config.Config
@@ -45,7 +46,7 @@ func main() {
 		panic(err)
 	}
 
-	out, err := os.Create("gin.log")
+	out, err := os.Create(logger.LogsDir + "/gin.log")
 	if err != nil {
 		panic(err)
 	}
