@@ -9,9 +9,7 @@ import (
 
 	"github.com/vinit-chauhan/tic-tac-toe/config"
 	"github.com/vinit-chauhan/tic-tac-toe/initializers"
-	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers/auth"
-	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers/user"
-	"github.com/vinit-chauhan/tic-tac-toe/internal/middleware"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/router"
 	"github.com/vinit-chauhan/tic-tac-toe/utils/logger"
 )
 
@@ -39,6 +37,7 @@ func Todo(ctx *gin.Context) {
 
 func main() {
 	logger.Info("starting the server", "main")
+	addr := fmt.Sprintf("%s:%d", conf.Server.Host, conf.Server.Port)
 
 	logger.Info("connecting to Database", "main")
 	err := initializers.ConnectDB(conf)
@@ -57,16 +56,6 @@ func main() {
 	}
 
 	r := gin.Default()
-
-	// Auth endpoints
-	r.POST("/auth/signup/", user.CreateUser)
-	r.POST("/auth/login/", auth.Login)
-	r.POST("/auth/signout/", auth.SignOut)
-
-	// User routes
-	r.GET("/user/profile", middleware.CheckAuth, user.GetUserInfo)
-
-	addr := fmt.Sprintf("%s:%d", conf.Server.Host, conf.Server.Port)
-
+	router.SetRoutes(r)
 	r.Run(addr)
 }
