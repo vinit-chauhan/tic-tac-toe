@@ -1,53 +1,56 @@
 import { useState } from "react";
 import {
   SafeAreaView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
-
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigarionTypes";
 import { style } from "./styles/root";
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<
+type SignupScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  "Login"
+  "Signup"
 >;
 
 type Props = {
-  navigation: LoginScreenNavigationProp;
+  navigation: SignupScreenNavigationProp;
 };
 
-const Login = ({ navigation }: Props) => {
+const Signup = ({ navigation }: Props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const { onLogin } = useAuth();
 
-  const validateUsername = (username: string) => {
-    if (username === "") {
-      setError("Username is required");
-    } else {
-      setError("");
+  const { onRegister } = useAuth();
+
+  const handleRegistration = async () => {
+    if (!username || !password) {
+      return;
     }
-  };
 
-  const validatePassword = (password: string) => {
-    if (password === "") {
-      setError("Password is required");
-    } else {
-      setError("");
-    }
-  };
-
-  const handleLogin = async () => {
-    const result = await onLogin!(username, password);
+    const result = await onRegister!(username, password, email);
     if (result && result.error) {
       alert(result.msg);
+    }
+  };
+
+  const validateUsername = (username: string) => {
+    if (username.length < 3) {
+      setError("Username must be at least 3 characters long");
+    } else {
+      setError("");
+    }
+  };
+  const validatePassword = (password: string) => {
+    if (password.length < 4) {
+      setError("Password must be at least 8 characters long");
+    } else {
+      setError("");
     }
   };
 
@@ -57,35 +60,49 @@ const Login = ({ navigation }: Props) => {
         <TextInput
           style={style.textBox}
           placeholder="Username"
-          onBlur={(e) => validateUsername(e.nativeEvent.text)}
+          autoComplete="username"
           onChangeText={(username) => setUsername(username)}
+          onBlur={(e) => {
+            validateUsername(e.nativeEvent.text);
+          }}
         />
 
         <TextInput
           style={style.textBox}
+          id="email"
+          placeholder="Email"
+          autoComplete="email"
+          onChangeText={(email) => setEmail(email)}
+        />
+
+        <TextInput
+          style={style.textBox}
+          id="password"
           placeholder="Password"
           autoComplete="current-password"
           secureTextEntry={true}
-          onBlur={(e) => validatePassword(e.nativeEvent.text)}
           onChangeText={(password) => setPassword(password)}
+          onBlur={(e) => {
+            validatePassword(e.nativeEvent.text);
+          }}
         />
 
         {error && <Text style={{ color: "red" }}>{error}</Text>}
 
         <TouchableOpacity
-          onPress={handleLogin}
+          onPress={handleRegistration}
           disabled={error.length > 0}
           style={[style.loginBtn, { opacity: error.length > 0 ? 0.5 : 1 }]}
         >
-          <Text style={style.text}>Sign in</Text>
+          <Text style={style.text}>Sign Up</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-          <Text style={style.link}>Don't have an account?</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={style.link}>Already a member?</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
-export default Login;
+export default Signup;

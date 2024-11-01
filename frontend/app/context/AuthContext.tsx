@@ -15,7 +15,7 @@ interface AuthProps {
 }
 
 const TOKEN_KEY = "jwt-token";
-export const API_URL = "http://192.168.140.10:3000";
+export const API_URL = process.env.BACKEND_API_URL || "http://192.168.140.10:3000";
 const AuthContext = createContext<AuthProps>({});
 
 export const useAuth = () => {

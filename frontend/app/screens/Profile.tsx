@@ -3,6 +3,12 @@ import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { API_URL } from "../context/AuthContext";
 
+type UserProfile = {  
+  ID: number;
+  Username: string;
+  Email: string;
+};
+
 const Profile = () => {
   const [profile, setProfile] = useState<UserProfile>({
     ID: -1,
