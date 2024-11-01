@@ -13,6 +13,7 @@ This project is a **Tic-Tac-Toe** game built with a **React Native** frontend an
 - [Docker Setup](#docker-setup)
 
 ## Project Structure
+```
 tic-tac-toe-app/ 
  │
  ├── backend/ # Golang backend code
@@ -22,7 +23,7 @@ tic-tac-toe-app/
  ├── docker-compose.yml # Docker Compose setup for local dev
  ├── README.md # Main documentation
  └── .gitignore # Gitignore for both frontend and backend
-
+```
 ## Technologies Used
 
 ### Backend (Golang)
