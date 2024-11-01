@@ -1,10 +1,11 @@
-import { Button, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Login from "./screens/Login";
-import Signup from "./screens/Signup";
-import Profile from "./screens/Profile";
+import Login from "./screens/login";
+import Signup from "./screens/signup";
+import Profile from "./screens/profile";
 import { RootStackParamList } from "./navigarionTypes";
+import { style } from "./screens/styles/root";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -30,6 +31,13 @@ export default function App() {
 const Layout = () => {
   const { authState, onLogout } = useAuth();
 
+  if (authState?.authenticated === null) {
+    return (
+      <View style={style.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
   return (
     <Stack.Navigator>
       {authState?.authenticated ? (
@@ -39,7 +47,7 @@ const Layout = () => {
           options={{
             headerRight: () => (
               <View style={{ marginRight: 10 }}>
-                <Button title="Logout" onPress={onLogout} />{" "}
+                <Button title="Logout" onPress={onLogout} />
               </View>
             ),
           }}

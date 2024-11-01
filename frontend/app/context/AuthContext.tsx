@@ -49,6 +49,11 @@ export const AuthProvider = ({ children }: any) => {
           token: token,
           authenticated: true,
         });
+      } else {
+        setAuthState({
+          token: null,
+          authenticated: false,
+        });
       }
     };
 
@@ -61,6 +66,10 @@ export const AuthProvider = ({ children }: any) => {
     email: string | null
   ) => {
     try {
+      username = username.trim();
+      password = password.trim();
+      email = email?.trim() || null;
+
       return await axios.post(
         `${API_URL}/users`,
         { username, password, email },
@@ -77,6 +86,9 @@ export const AuthProvider = ({ children }: any) => {
 
   const login = async (username: string, password: string) => {
     try {
+      username = username.trim();
+      password = password.trim();
+      
       const result = await axios({
         method: "post",
         url: `${API_URL}/auth/login`,

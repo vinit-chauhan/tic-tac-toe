@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { API_URL } from "../context/AuthContext";
+import { style } from "./styles/root";
 
 type UserProfile = {  
   ID: number;
@@ -24,7 +25,9 @@ const Profile = () => {
   }, []);
 
   return (
-    <View>
+    <View
+      style={style.container}
+    >
       <Text>Login</Text>
       <Text>{profile.Username}</Text>
       <Text>{profile.ID}</Text>
