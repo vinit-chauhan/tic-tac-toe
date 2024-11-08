@@ -28,13 +28,13 @@ tic-tac-toe-app/
 
 ### Backend (Golang)
 - **Go**: Golang for the backend API.
-- **REST API** or **gRPC**: Communication between the backend and frontend.
-- **(Optional) Database**: If storing game history, player profiles, etc.
+- **REST API**: Communication between the backend and frontend.
+- **Postgres**: If storing game history, player profiles, etc.
 
 ### Frontend (React Native)
 - **React Native**: For cross-platform mobile app development.
 - **React Navigation**: For navigation between app screens.
-- **Axios** or **Fetch**: For making API requests to the backend.
+- **Axios**: For making API requests to the backend.
 
 ### Docker
 - **Docker**: For containerizing the app for consistent development and deployment.
@@ -53,3 +53,4 @@ tic-tac-toe-app/
    ```bash
    git clone https://github.com/your-username/tic-tac-toe-app.git
    cd tic-tac-toe-app
+   ```
