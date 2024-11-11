@@ -21,15 +21,22 @@ type DbConfig struct {
 	DBName   string `yaml:"db_name"`
 }
 
+type RedisConfig struct {
+	Host string `yaml:"host"`
+	Port int    `yaml:"port"`
+}
+
 type Config struct {
 	Server   ServerConfig `yaml:"server"`
 	Database DbConfig     `yaml:"database"`
+	Redis    RedisConfig  `yaml:"redis"`
 }
 
 func Default() Config {
 	return Config{
 		Server:   ServerConfig{Port: 8080, Host: "localhost"},
 		Database: DbConfig{},
+		Redis:    RedisConfig{},
 	}
 }
 

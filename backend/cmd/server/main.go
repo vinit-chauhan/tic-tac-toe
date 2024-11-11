@@ -51,6 +51,9 @@ func main() {
 	}
 	gin.DefaultWriter = out
 
+	logger.Info("connecting to Redis", "main")
+	initializers.ConnectRedis(conf.Redis)
+
 	if os.Getenv("SECRET") == "" {
 		panic("env(SECRET) not set")
 	}

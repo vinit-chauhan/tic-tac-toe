@@ -12,6 +12,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/vinit-chauhan/tic-tac-toe/initializers"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/models"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/types"
 )
 
 func CheckAuth(ctx *gin.Context) {
@@ -72,6 +73,13 @@ func CheckAuth(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Set("currentUser", user)
+	userProfile := types.UserProfile{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+	}
+
+	ctx.Set("currentUser", userProfile)
+	ctx.Set("currentUserId", user.ID)
 	ctx.Next()
 }

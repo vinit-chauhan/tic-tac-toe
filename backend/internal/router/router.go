@@ -1,9 +1,12 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers/auth"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers/game"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/controllers/user"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/middleware"
 	"github.com/vinit-chauhan/tic-tac-toe/utils/logger"
@@ -19,7 +22,7 @@ func SetRoutes(r *gin.Engine) {
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
 
 		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
+			c.AbortWithStatus(http.StatusNoContent)
 			return
 		}
 
@@ -34,4 +37,9 @@ func SetRoutes(r *gin.Engine) {
 	r.POST("/users", user.CreateUser)
 	r.GET("/profile", middleware.CheckAuth, user.GetUserInfo)
 
+	r.POST("/game", middleware.CheckAuth, game.StartNewGame)
+	r.GET("/game/:gameId", middleware.CheckAuth, game.GetGameState)
+	r.PUT("/game/:gameId", middleware.CheckAuth, game.MakeMove)
+	r.POST("/game/:gameId/join", middleware.CheckAuth, game.JoinGame)
+	r.PUT("/game/:gameId/move", middleware.CheckAuth, game.MakeMove)
 }

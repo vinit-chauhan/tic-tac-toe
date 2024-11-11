@@ -8,3 +8,7 @@ database:
   user: "postgres"
   password: "example"
   db_name: "postgres"
+
+redis:
+  host: "192.168.140.10"
+  port: 6379
