@@ -9,7 +9,9 @@ import (
 
 	"github.com/vinit-chauhan/tic-tac-toe/config"
 	"github.com/vinit-chauhan/tic-tac-toe/initializers"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/database"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/router"
+	"github.com/vinit-chauhan/tic-tac-toe/metrics"
 	"github.com/vinit-chauhan/tic-tac-toe/utils/logger"
 )
 
@@ -40,7 +42,7 @@ func main() {
 	addr := fmt.Sprintf("%s:%d", conf.Server.Host, conf.Server.Port)
 
 	logger.Info("connecting to Database", "main")
-	err := initializers.ConnectDB(conf)
+	err := database.ConnectDB(conf)
 	if err != nil {
 		panic(err)
 	}
@@ -59,6 +61,7 @@ func main() {
 	}
 
 	r := gin.Default()
+	metrics.InitPrometheus(r)
 	router.SetRoutes(r)
 	r.Run(addr)
 }

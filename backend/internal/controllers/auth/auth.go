@@ -8,12 +8,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/vinit-chauhan/tic-tac-toe/initializers"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/database"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/models"
+	"github.com/vinit-chauhan/tic-tac-toe/metrics"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func Login(ctx *gin.Context) {
+	metrics.HttpRequestsTotal.WithLabelValues(ctx.Request.URL.Path).Inc()
 	var body struct {
 		Username string `binding:"required"`
 		Password string `binding:"required"`
@@ -25,7 +27,7 @@ func Login(ctx *gin.Context) {
 	}
 
 	var foundUser models.User
-	res := initializers.DB.Where("username=?", body.Username).Find(&foundUser)
+	res := database.DB.Where("username=?", body.Username).Find(&foundUser)
 	if res.Error != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": res.Error})
 		return
@@ -62,6 +64,7 @@ func Login(ctx *gin.Context) {
 }
 
 func SignOut(ctx *gin.Context) {
+	metrics.HttpRequestsTotal.WithLabelValues(ctx.Request.URL.Path).Inc()
 	ctx.SetCookie("Authorization", "", int(time.Now().Add(-1*time.Hour).Unix()), "/", "", true, true)
 	ctx.JSON(http.StatusOK, gin.H{"message": "successfully signed out"})
 }

@@ -5,11 +5,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/vinit-chauhan/tic-tac-toe/initializers"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/database"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/models"
+	"github.com/vinit-chauhan/tic-tac-toe/metrics"
 )
 
 func fetchUserId(ctx *gin.Context) (uint, error) {
+	metrics.HttpRequestsTotal.WithLabelValues(ctx.Request.URL.Path).Inc()
 	details, ok := ctx.Get("currentUserId")
 	if !ok {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": ErrUnauthorized.Error()})
@@ -26,6 +28,8 @@ func fetchUserId(ctx *gin.Context) (uint, error) {
 }
 
 func StartNewGame(ctx *gin.Context) {
+	metrics.HttpRequestsTotal.WithLabelValues(ctx.Request.URL.Path).Inc()
+
 	userId, err := fetchUserId(ctx)
 	if err != nil {
 		return
@@ -47,6 +51,7 @@ func StartNewGame(ctx *gin.Context) {
 }
 
 func JoinGame(ctx *gin.Context) {
+	metrics.HttpRequestsTotal.WithLabelValues(ctx.Request.URL.Path).Inc()
 	gameId := ctx.Params.ByName("gameId")
 	game, ok := GameState[gameId]
 	if !ok {
@@ -74,6 +79,7 @@ func JoinGame(ctx *gin.Context) {
 }
 
 func GetGameState(ctx *gin.Context) {
+	metrics.HttpRequestsTotal.WithLabelValues(ctx.Request.URL.Path).Inc()
 	gameId := ctx.Params.ByName("gameId")
 	board, ok := BoardState[gameId]
 	if !ok {
@@ -84,6 +90,7 @@ func GetGameState(ctx *gin.Context) {
 }
 
 func MakeMove(ctx *gin.Context) {
+	metrics.HttpRequestsTotal.WithLabelValues(ctx.Request.URL.Path).Inc()
 	userId, err := fetchUserId(ctx)
 	if err != nil {
 		return
@@ -116,7 +123,7 @@ func MakeMove(ctx *gin.Context) {
 	if game.Winner != 0 {
 		// TODO: save the game state in DB
 		var user models.User
-		initializers.DB.Where("ID=?", game.Winner).Find(&user)
+		database.DB.Where("ID=?", game.Winner).Find(&user)
 		ctx.JSON(http.StatusOK, gin.H{"winner": user.Username})
 		return
 	}

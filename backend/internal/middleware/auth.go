@@ -10,12 +10,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/vinit-chauhan/tic-tac-toe/initializers"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/database"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/models"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/types"
+	"github.com/vinit-chauhan/tic-tac-toe/metrics"
 )
 
 func CheckAuth(ctx *gin.Context) {
+	metrics.HttpRequestsTotal.WithLabelValues("CheckAuth").Inc()
 	authHeader := ctx.GetHeader("Authorization")
 
 	if authHeader == "" {
@@ -66,7 +68,9 @@ func CheckAuth(ctx *gin.Context) {
 
 	var user models.User
 	id, _ := strconv.Atoi(sub)
-	initializers.DB.Where("ID=?", id).Find(&user)
+	if _, exists := ctx.Get("currentUserId"); !exists {
+		database.DB.Where("ID=?", id).Find(&user)
+	}
 
 	if user.ID == 0 {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "user unauthorized"})

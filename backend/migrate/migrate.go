@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/vinit-chauhan/tic-tac-toe/config"
-	"github.com/vinit-chauhan/tic-tac-toe/initializers"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/database"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/models"
 )
 
@@ -17,7 +17,7 @@ func init() {
 
 	fmt.Println("Config File Loaded Successfully")
 
-	err = initializers.ConnectDB(conf)
+	err = database.ConnectDB(conf)
 	if err != nil {
 		panic(err)
 	}
@@ -26,7 +26,7 @@ func init() {
 }
 
 func main() {
-	if err := initializers.DB.AutoMigrate(&models.User{}); err != nil {
+	if err := database.DB.AutoMigrate(&models.User{}); err != nil {
 		panic(err)
 	}
 

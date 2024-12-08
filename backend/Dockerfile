@@ -10,10 +10,7 @@ RUN go mod download
 
 # Copy the rest of the application code
 COPY config ./config
-COPY cmd ./cmd
-COPY initializers ./initializers
-COPY internal ./internal
-COPY utils ./utils
+COPY . .
 
 # Set environment variables for the build
 ENV CGO_ENABLED=0 

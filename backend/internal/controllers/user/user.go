@@ -6,11 +6,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/vinit-chauhan/tic-tac-toe/initializers"
+	"github.com/vinit-chauhan/tic-tac-toe/internal/database"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/models"
+	"github.com/vinit-chauhan/tic-tac-toe/metrics"
 )
 
 func GetUserInfo(ctx *gin.Context) {
+	metrics.HttpRequestsTotal.WithLabelValues(ctx.Request.URL.Path).Inc()
 	user, ok := ctx.Get("currentUser")
 	if !ok {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
@@ -21,6 +23,7 @@ func GetUserInfo(ctx *gin.Context) {
 }
 
 func CreateUser(ctx *gin.Context) {
+	metrics.HttpRequestsTotal.WithLabelValues(ctx.Request.URL.Path).Inc()
 	var body struct {
 		Username string `json:"username" binding:"required"`
 		Password string `json:"password" binding:"required"`
@@ -33,7 +36,7 @@ func CreateUser(ctx *gin.Context) {
 	}
 
 	var u models.User
-	initializers.DB.Where("username=?", body.Username).Find(&u)
+	database.DB.Where("username=?", body.Username).Find(&u)
 	if u.ID != 0 {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "user already exist"})
 		return
@@ -51,7 +54,7 @@ func CreateUser(ctx *gin.Context) {
 		Email:    body.Email,
 	}
 
-	res := initializers.DB.Create(&user)
+	res := database.DB.Create(&user)
 	if res.Error != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": res.Error})
 		return
