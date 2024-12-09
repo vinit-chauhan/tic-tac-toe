@@ -8,6 +8,7 @@ import { useLocalSearchParams } from "expo-router";
 const GameScreen = () => {
   const [game, setGame] = useState(Array(9).fill(null));
   const [winner, setWinner] = useState<string | null>(null);
+  const [waiting, setWaiting] = useState<boolean>(true);
 
   const { id } = useLocalSearchParams();
   const gameId = Array.isArray(id) ? id[0] : id;
@@ -20,6 +21,7 @@ const GameScreen = () => {
         if (resp.data["winner"]) {
           setWinner(resp.data["winner"]);
         }
+        !resp.data["waiting"] && setWaiting(false)
       })
       .catch((error) => console.log(error));
   };
@@ -36,59 +38,66 @@ const GameScreen = () => {
 
   return (
     <View style={style.container}>
-      <View>
-        <Text>Game</Text>
-      </View>
-      {winner ? (
-        <Text> {winner} Won!! </Text>
+      {waiting ? (
+        <View>
+          <Text>Waiting for another player</Text>
+          <Text>Game ID: {gameId}</Text>
+        </View>
       ) : (
-        <View style={{ flexDirection: "column" }}>
-          {[0, 1, 2].map((row) => (
-            <View
-              key={row}
-              style={{ flexDirection: "row", backgroundColor: "black" }}
-            >
-              {[0, 1, 2].map((col) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    axios
-                      .put(`${API_URL}/game/3735928558/move`, {
-                        row: row,
-                        column: col,
-                      })
-                      .then((resp) => {
-                        console.log(resp.data);
-
-                        setGame(resp.data["board"]);
-
-                        if (resp.data["winner"]) {
-                          console.log(`Winner is: ${resp.data["winner"]}`);
-                          setWinner(winner);
-                        }
-                      })
-                      .catch((err) => console.log(`ERROR: ${err}`));
-                  }}
-                  key={col}
-                  style={{
-                    width: 100,
-                    height: 100,
-                    margin: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "white",
-                  }}
+        <View>
+          <Text>Game</Text>
+          {winner ? (
+            <Text>{winner} Won!!</Text>
+          ) : (
+            <View style={{ flexDirection: "column" }}>
+              {[0, 1, 2].map((row) => (
+                <View
+                  key={row}
+                  style={{ flexDirection: "row", backgroundColor: "black" }}
                 >
-                  <Text>
-                    {game[row * 3 + col] == 0
-                      ? ""
-                      : game[row * 3 + col] == 1
-                      ? "X"
-                      : "O"}
-                  </Text>
-                </TouchableOpacity>
+                  {[0, 1, 2].map((col) => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        axios
+                          .put(`${API_URL}/game/${gameId}/move`, {
+                            row: row,
+                            column: col,
+                          })
+                          .then((resp) => {
+                            console.log(resp.data);
+
+                            setGame(resp.data["board"]);
+
+                            if (resp.data["winner"]) {
+                              console.log(`Winner is: ${resp.data["winner"]}`);
+                              setWinner(resp.data["winner"]);
+                            }
+                          })
+                          .catch((err) => console.log(`ERROR: ${err}`));
+                      }}
+                      key={col}
+                      style={{
+                        width: 100,
+                        height: 100,
+                        margin: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "white",
+                      }}
+                    >
+                      <Text>
+                        {game[row * 3 + col] == 0
+                          ? ""
+                          : game[row * 3 + col] == 1
+                          ? "X"
+                          : "O"}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               ))}
             </View>
-          ))}
+          )}
         </View>
       )}
     </View>

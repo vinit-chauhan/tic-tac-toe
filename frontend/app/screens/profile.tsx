@@ -38,8 +38,7 @@ const Profile = () => {
 
   return (
     <View style={style.container}>
-      <Text>Login</Text>
-      <Text>{profile.Username}</Text>
+      <Text>Hello, {profile.Username}.</Text>
 
       <View style={[style.container, style.formGroup]}>
         <TextInput
