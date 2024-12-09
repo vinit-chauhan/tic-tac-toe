@@ -8,9 +8,6 @@ This project is a **Tic-Tac-Toe** game built with a **React Native** frontend an
 - [Getting Started](#getting-started)
   - [Requirements](#requirements)
   - [Installation](#installation)
-  - [Running the App](#running-the-app)
-  - [Backend API](#backend-api)
-- [Docker Setup](#docker-setup)
 
 ## Project Structure
 ```
@@ -37,7 +34,23 @@ tic-tac-toe-app/
 - **Axios**: For making API requests to the backend.
 
 ### Docker
-- **Docker**: For containerizing the app for consistent development and deployment.
+- To containerize the app for consistent development and deployment.
+- A multi-staged build was used for small container image sizes.
+
+### Redis [TODO]
+- To store game state for faster access
+
+### Prometheus
+- To monitor the application.
+
+## TODOs:
+- [ ] Beautify UI
+- [ ] Add docker container for frontend code ( web ) 
+- [ ] History of games
+- [ ] Use Redis to store game state
+- [ ] Use long polling instead of continuous polling
+- [ ] Switch to web socket for game state events
+- [ ] Create CI steps to build and release for Android and iOS
 
 ## Getting Started
 
@@ -53,4 +66,5 @@ tic-tac-toe-app/
    ```bash
    git clone https://github.com/your-username/tic-tac-toe-app.git
    cd tic-tac-toe-app
+   docker compose up -d
    ```
