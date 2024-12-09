@@ -29,21 +29,21 @@ services:
     ports:
       - 6379:6379
 
-  # backend:
-  #   depends_on:
-  #     - db
-  #     - redis
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     - SECRET=ASDF
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./backend/config.yml:/app/config.yml
-  #     - ./backend/logs:/app/logs
-  #   command: ["/app/server"]
+  backend:
+    depends_on:
+      - db
+      - redis
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - SECRET=ASDF
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/config.yml:/app/config.yml
+      - ./backend/logs:/app/logs
+    command: ["/app/server"]
 
   prometheus:
     image: prom/prometheus
