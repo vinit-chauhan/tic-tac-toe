@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { style } from "../screens/styles/root";
 import { API_URL } from "../context/AuthContext";
+import { useLocalSearchParams } from "expo-router";
 
 const GameScreen = () => {
   const [game, setGame] = useState(Array(9).fill(null));
   const [winner, setWinner] = useState<string | null>(null);
+
+  const { id } = useLocalSearchParams();
+  const gameId = Array.isArray(id) ? id[0] : id;
 
   const updateGameState = (id: string) => {
     axios
@@ -21,13 +25,12 @@ const GameScreen = () => {
   };
 
   useEffect(() => {
+    // TODO: Use long polling
     const interval = setInterval(() => {
-      if (!winner) {
-        updateGameState("3735928558");
-      }
-    }, 1000);
+      updateGameState(gameId);
+    }, 10000);
 
-    updateGameState("3735928558");
+    updateGameState(gameId);
     return () => clearInterval(interval);
   }, [winner]);
 
@@ -40,7 +43,6 @@ const GameScreen = () => {
         <Text> {winner} Won!! </Text>
       ) : (
         <View style={{ flexDirection: "column" }}>
-          <Text> {winner} Won!! </Text>
           {[0, 1, 2].map((row) => (
             <View
               key={row}
