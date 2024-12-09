@@ -13,9 +13,21 @@ import (
 
 func GetUserInfo(ctx *gin.Context) {
 	metrics.HttpRequestsTotal.WithLabelValues(ctx.Request.URL.Path).Inc()
-	user, ok := ctx.Get("currentUser")
+	userID, ok := ctx.Get("currentUserId")
 	if !ok {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	user := models.User{}
+
+	metrics.DataBaseOpCount.WithLabelValues("select").Inc()
+	metrics.DatabaseOpTime.WithLabelValues("select").Observe(0)
+	database.DB.First(&user, userID)
+	metrics.DatabaseOpTime.WithLabelValues("select").Observe(1)
+
+	if user.ID == 0 {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "user not found"})
 		return
 	}
 

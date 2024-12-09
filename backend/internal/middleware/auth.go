@@ -12,7 +12,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/database"
 	"github.com/vinit-chauhan/tic-tac-toe/internal/models"
-	"github.com/vinit-chauhan/tic-tac-toe/internal/types"
 	"github.com/vinit-chauhan/tic-tac-toe/metrics"
 )
 
@@ -69,21 +68,13 @@ func CheckAuth(ctx *gin.Context) {
 	var user models.User
 	id, _ := strconv.Atoi(sub)
 	if _, exists := ctx.Get("currentUserId"); !exists {
-		database.DB.Where("ID=?", id).Find(&user)
-	}
+		database.DB.Where("ID=?", id).First(&user)
 
-	if user.ID == 0 {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "user unauthorized"})
-		return
+		if user.ID == 0 {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "user unauthorized"})
+			return
+		}
+		ctx.Set("currentUserId", user.ID)
 	}
-
-	userProfile := types.UserProfile{
-		ID:       user.ID,
-		Username: user.Username,
-		Email:    user.Email,
-	}
-
-	ctx.Set("currentUser", userProfile)
-	ctx.Set("currentUserId", user.ID)
 	ctx.Next()
 }
