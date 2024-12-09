@@ -100,6 +100,11 @@ func GetGameState(ctx *gin.Context) {
 		return
 	}
 
+	if game.Player2 == 0 {
+		ctx.JSON(http.StatusOK, gin.H{"waiting": true, "board": board})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{"board": board})
 }
 
